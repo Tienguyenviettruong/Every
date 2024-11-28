@@ -10,9 +10,14 @@ export function useTheme() {
   }
 
   const applyTheme = () => {
-    document.documentElement.className = isDark.value ? 'dark' : ''
+    if (isDark.value) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
   }
 
+  // Apply theme on initial load
   watch(isDark, () => {
     applyTheme()
   }, { immediate: true })

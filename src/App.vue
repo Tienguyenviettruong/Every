@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useTheme } from './composables/useTheme'
 import AppHeader from './components/AppHeader.vue'
@@ -9,6 +9,10 @@ import AppFooter from './components/AppFooter.vue'
 const route = useRoute()
 const { isDark, toggleTheme } = useTheme()
 const isCollapsed = ref(false)
+
+const showDefaultSidebar = computed(() => {
+  return !route.meta.layout || route.meta.layout !== 'optimize'
+})
 
 const toggleSidebar = () => {
   isCollapsed.value = !isCollapsed.value
@@ -28,11 +32,11 @@ const toggleSidebar = () => {
     </header>
     
     <div class="main-container">
-      <aside class="sidebar" :class="{ collapsed: isCollapsed }">
+      <aside v-if="showDefaultSidebar" class="sidebar" :class="{ collapsed: isCollapsed }">
         <AppSidebar :is-collapsed="isCollapsed" @toggle-collapse="toggleSidebar" />
       </aside>
       
-      <main class="content">
+      <main class="content" :class="{ 'no-default-sidebar': !showDefaultSidebar }">
         <router-view />
       </main>
     </div>
@@ -56,7 +60,7 @@ const toggleSidebar = () => {
   left: 0;
   right: 0;
   height: var(--header-height);
-  background: var(--el-bg-color);
+  background: rgb(194, 195, 196);
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   z-index: 1000;
 }
@@ -92,6 +96,10 @@ const toggleSidebar = () => {
   min-height: 100%;
   transition: margin-left 0.3s;
 
+  &.no-default-sidebar {
+    margin-left: 0;
+  }
+
   .sidebar.collapsed + & {
     margin-left: 64px;
   }
@@ -102,13 +110,9 @@ const toggleSidebar = () => {
   left: 0;
   right: 0;
   bottom: 0;
+  height: var(--footer-height);
   background: var(--el-bg-color);
+  border-top: 1px solid var(--el-border-color-light);
   z-index: 998;
-  // margin-left: var(--sidebar-width);
-  transition: margin-left 0.3s;
-
-  .sidebar.collapsed ~ & {
-    margin-left: 64px;
-  }
 }
 </style>

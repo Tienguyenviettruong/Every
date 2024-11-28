@@ -52,6 +52,12 @@ const messages = {
         title: '6. Preserve',
         description: 'Content archival and maintenance'
       }
+    },
+    optimization: {
+      metrics: 'Performance Metrics',
+      analytics: 'Analytics',
+      monitoring: 'Monitoring',
+      settings: 'Settings'
     }
   },
   zh: {
@@ -105,6 +111,12 @@ const messages = {
         title: '6. 保存',
         description: '内容归档和维护'
       }
+    },
+    optimization: {
+      metrics: '性能指标',
+      analytics: '分析',
+      monitoring: '监控',
+      settings: '设置'
     }
   }
 }

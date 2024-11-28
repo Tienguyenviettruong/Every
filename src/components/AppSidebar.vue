@@ -3,9 +3,23 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-defineProps<{
+interface MenuItem {
+  icon: string
+  title: string
+  path: string
+}
+
+interface Props {
   isCollapsed: boolean
-}>()
+  menuItems?: MenuItem[]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  menuItems: () => [
+    { icon: 'HomeFilled', title: 'menu.dashboard', path: '/' },
+    { icon: 'Connection', title: 'menu.lifecycle', path: '/lifecycle' }
+  ]
+})
 
 defineEmits<{
   (e: 'toggleCollapse'): void
@@ -20,24 +34,14 @@ defineEmits<{
       default-active="1"
       router
     >
-      <el-menu-item index="/">
-        <el-icon><HomeFilled /></el-icon>
-        <template #title>{{ t('menu.dashboard') }}</template>
+      <el-menu-item 
+        v-for="item in menuItems" 
+        :key="item.path"
+        :index="item.path"
+      >
+        <el-icon><component :is="item.icon" /></el-icon>
+        <template #title>{{ t(item.title) }}</template>
       </el-menu-item>
-      
-      <el-menu-item index="/lifecycle">
-        <el-icon><Connection /></el-icon>
-        <template #title>{{ t('menu.lifecycle') }}</template>
-      </el-menu-item>
-      
-      <el-sub-menu index="2">
-        <template #title>
-          <el-icon><Document /></el-icon>
-          <span>{{ t('menu.pages') }}</span>
-        </template>
-        <el-menu-item index="/profile">{{ t('menu.profile') }}</el-menu-item>
-        <el-menu-item index="/settings">{{ t('menu.settings') }}</el-menu-item>
-      </el-sub-menu>
     </el-menu>
     
     <div class="collapse-button" @click="$emit('toggleCollapse')">
@@ -65,10 +69,11 @@ defineEmits<{
   &:not(.el-menu--collapse) {
     width: 200px;
   }
+  
 }
 
 .collapse-button {
-  // padding: 16px;
+  padding: 16px;
   text-align: center;
   border-top: 1px solid var(--el-border-color-lighter);
 }

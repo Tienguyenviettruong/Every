@@ -16,8 +16,8 @@ const { t } = useI18n()
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid var(--el-border-color-lighter);
-  background: burlywood;
+  // border-top: 1px solid var(--el-border-color-lighter);
+  background: linear-gradient(to right, #605d9c, #363535);
   padding: 0 20px;
   
   p {

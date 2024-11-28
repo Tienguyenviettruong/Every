@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
-import Lifecycle from '../views/Lifecycle.vue'
-
+import Lifecycle from '../views/Lifecycle1.vue'
+import Optimize from '../views/Optimize.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -23,6 +23,15 @@ const router = createRouter({
       name: 'Lifecycle',
       component: Lifecycle,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/optimize',
+      name: 'Optimize',
+      component: Optimize,
+      meta: { 
+        requiresAuth: true,
+        layout: 'optimize'
+      }
     }
   ]
 })
