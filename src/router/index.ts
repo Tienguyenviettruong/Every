@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Lifecycle from '../views/Lifecycle1.vue'
 import Optimize from '../views/Optimize.vue'
+import Lab from '../views/Lab.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -31,6 +32,15 @@ const router = createRouter({
       meta: { 
         requiresAuth: true,
         layout: 'optimize'
+      }
+    },
+    {
+      path: '/lab',
+      name: 'Lab',
+      component: Lab,
+      meta: { 
+        requiresAuth: true,
+        layout: 'lab'
       }
     }
   ]

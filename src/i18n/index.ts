@@ -10,7 +10,8 @@ const messages = {
       lifecycle: 'Content Lifecycle',
       pages: 'Pages',
       profile: 'Profile',
-      settings: 'Settings'
+      settings: 'Settings',
+      lab: 'Analysis Lab'
     },
     header: {
       profile: 'Profile',
@@ -69,7 +70,8 @@ const messages = {
       lifecycle: '内容生命周期',
       pages: '页面',
       profile: '个人资料',
-      settings: '设置'
+      settings: '设置',
+      lab: '分析实验室'
     },
     header: {
       profile: '个人资料',

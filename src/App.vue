@@ -11,7 +11,7 @@ const { isDark, toggleTheme } = useTheme()
 const isCollapsed = ref(false)
 
 const showDefaultSidebar = computed(() => {
-  return !route.meta.layout || route.meta.layout !== 'optimize'
+  return !route.meta.layout || route.meta.layout !== 'optimize' && route.meta.layout !== 'lab'
 })
 
 const toggleSidebar = () => {
@@ -100,6 +100,10 @@ const toggleSidebar = () => {
     margin-left: 0;
   }
 
+  &.lab-layout {
+    padding: 0;
+  }
+  
   .sidebar.collapsed + & {
     margin-left: 64px;
   }
