@@ -11,7 +11,8 @@ const messages = {
       pages: 'Pages',
       profile: 'Profile',
       settings: 'Settings',
-      lab: 'Analysis Lab'
+      lab: 'Analysis Lab',
+      chat: 'Chat'
     },
     header: {
       profile: 'Profile',
@@ -71,7 +72,8 @@ const messages = {
       pages: '页面',
       profile: '个人资料',
       settings: '设置',
-      lab: '分析实验室'
+      lab: '分析实验室',
+      chat: '聊天'
     },
     header: {
       profile: '个人资料',

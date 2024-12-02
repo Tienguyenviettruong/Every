@@ -4,6 +4,7 @@ import Login from '../views/Login.vue'
 import Lifecycle from '../views/Lifecycle1.vue'
 import Optimize from '../views/Optimize.vue'
 import Lab from '../views/Lab.vue'
+import Chat from '../views/Chat.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -41,6 +42,15 @@ const router = createRouter({
       meta: { 
         requiresAuth: true,
         layout: 'lab'
+      }
+    },
+    {
+      path: '/chat',
+      name: 'Chat',
+      component: Chat,
+      meta: { 
+        requiresAuth: true,
+        layout: 'chat'
       }
     }
   ]
