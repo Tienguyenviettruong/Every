@@ -1,9 +1,12 @@
 <template>
-  <ChatLayout>
+  <ChatLayout @select-chat="handleChatSelect">
     <div class="chat-container">
       <div class="chat-header">
         <div class="user-info">
-          <el-avatar :src="currentChat?.avatar" :size="32" />
+          <div class="avatar-wrapper">
+            <el-avatar :src="currentChat?.avatar" :size="32" />
+            <span class="status-dot" :class="{ online: currentChat?.status === 'Online' }"></span>
+          </div>
           <div class="user-status">
             <div class="username">{{ currentChat?.name }}</div>
             <div class="status">{{ currentChat?.status }}</div>
@@ -25,10 +28,16 @@
         <div v-for="msg in messages" :key="msg.id" 
              class="message" 
              :class="{ 'message-own': msg.sender === currentUser.name }">
+          <el-avatar :src="msg.avatar" :size="24" class="message-avatar" />
           <div class="message-content">
             <div class="text">{{ msg.content }}</div>
             <div class="message-footer">
               <span class="time">{{ msg.time }}</span>
+              <span v-if="currentChat" 
+                    class="status" 
+                    :class="{'online': msg.sender === currentChat.name && currentChat.status === 'Active now'}">
+                {{ msg.sender === currentChat.name ? currentChat.status : '' }}
+              </span>
             </div>
           </div>
         </div>
@@ -78,34 +87,59 @@ const currentUser = ref({
 })
 
 const currentChat = ref({
+  id: 1,
   name: 'Team Discussion',
   status: 'Active now',
   avatar: 'https://avatars.githubusercontent.com/u/3?v=4'
 })
 
-const messages = ref([
-  {
-    id: 1,
-    sender: 'guyixuan',
-    content: 'Hi, how are you?',
-    time: '10:00',
-    avatar: 'https://avatars.githubusercontent.com/u/3?v=4'
-  },
-  {
-    id: 2,
-    sender: 'wangxinhao',
-    content: 'I\'m good, thanks! How about you?',
-    time: '10:01',
-    avatar: currentUser.value.avatar
-  }
-])
+const messagesByChat = ref({
+  1: [
+    {
+      id: 1,
+      sender: 'Team Discussion',
+      content: 'Hi, how are you?',
+      time: '10:00',
+      avatar: 'https://avatars.githubusercontent.com/u/3?v=4',
+      status: 'Active now'
+    },
+    {
+      id: 2,
+      sender: 'wangxinhao',
+      content: 'I\'m good, thanks! How about you?',
+      time: '10:01',
+      avatar: currentUser.value.avatar
+    }
+  ],
+  2: [
+    {
+      id: 3,
+      sender: 'Friendship Link Group',
+      content: 'Welcome everyone!',
+      time: '09:30',
+      avatar: 'https://avatars.githubusercontent.com/u/3?v=4',
+      status: 'Offline'
+    }
+  ]
+})
+
+const messages = ref(messagesByChat.value[1])
 
 const newMessage = ref('')
 const messagesContainer = ref<HTMLElement>()
 
+const handleChatSelect = (chat) => {
+  currentChat.value = {
+    ...chat,
+    status: chat.status || 'Offline'
+  }
+  messages.value = messagesByChat.value[chat.id] || []
+  scrollToBottom()
+}
+
 const sendMessage = () => {
   if (newMessage.value.trim()) {
-    messages.value.push({
+    const newMsg = {
       id: Date.now(),
       sender: currentUser.value.name,
       content: newMessage.value,
@@ -115,7 +149,11 @@ const sendMessage = () => {
         hour12: false 
       }),
       avatar: currentUser.value.avatar
-    })
+    }
+    
+    messages.value.push(newMsg)
+    messagesByChat.value[currentChat.value.id] = messages.value
+    
     newMessage.value = ''
     scrollToBottom()
   }
@@ -130,6 +168,7 @@ const scrollToBottom = () => {
 
 <style scoped lang="scss">
 .chat-container {
+  font-family: "Times New Roman", Times, serif;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -146,6 +185,36 @@ const scrollToBottom = () => {
     display: flex;
     align-items: center;
     gap: 12px;
+
+    .avatar-wrapper {
+      position: relative;
+      
+      .status-dot {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #909399;
+        border: 2px solid white;
+        
+        &.online {
+          background: #67C23A;
+        }
+      }
+    }
+
+    .user-status {
+      .username {
+        font-weight: 500;
+      }
+      
+      .status {
+        font-size: 12px;
+        color: #909399;
+      }
+    }
   }
 }
 
@@ -163,7 +232,12 @@ const scrollToBottom = () => {
       
       .message-content {
         .text {
-          background: var(--el-color-primary-light-8);
+          background: var(--el-color-primary);
+          color: white;
+        }
+        
+        .message-footer {
+          color: var(--el-text-color-secondary);
         }
       }
     }
@@ -202,7 +276,6 @@ const scrollToBottom = () => {
       :deep(.el-input__wrapper) {
         box-shadow: none;
         padding: 0;
-        background: white;
       }
 
       :deep(.el-textarea__inner) {
@@ -211,7 +284,7 @@ const scrollToBottom = () => {
         min-height: 24px !important;
         max-height: 120px;
         box-shadow: none !important;
-        background: white;
+        background: transparent;
         font-size: 14px;
         resize: none;
         outline: none !important;

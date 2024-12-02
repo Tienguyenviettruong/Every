@@ -16,7 +16,10 @@
           :class="{ active: chat.id === activeChat }"
           @click="activeChat = chat.id"
         >
-          <el-avatar :src="chat.avatar" :size="32" class="chat-avatar" />
+          <div class="avatar-wrapper">
+            <el-avatar :src="chat.avatar" :size="32" class="chat-avatar" />
+            <span class="status-dot" :class="{ online: chat.status === 'Online' }"></span>
+          </div>
           <div class="conversation-info">
             <div class="name">{{ chat.name }}</div>
             <div class="last-message">{{ chat.lastMessage }}</div>
@@ -36,6 +39,7 @@
         <div class="profile-info">
           <h3>{{ currentChat?.name }}</h3>
           <div class="profile-link">{{ currentChat?.email }}</div>
+          <div class="status">{{ currentChat?.status }}</div>
         </div>
       </div>
 
@@ -70,6 +74,7 @@
 
 <style scoped lang="scss">
 .chat-layout {
+  font-family: "Times New Roman", Times, serif;
   display: flex;
   min-height: calc(100vh - var(--header-height) - var(--footer-height) - 42px);
   border-radius: 20px;
@@ -105,7 +110,41 @@
 
 .conversations {
   flex: 1;
+  max-height: calc(10 * 64px);
   overflow-y: auto;
+  
+  /* Ẩn thanh scroll mặc định */
+  &::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+
+  /* Chỉ hiện thanh scroll khi hover VÀ có overflow */
+  &:hover {
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #dcdfe6;
+      border-radius: 3px;
+      
+      &:hover {
+        background-color: #c0c4cc;
+      }
+    }
+  }
+
+  /* Firefox */
+  scrollbar-width: none; /* Ẩn mặc định */
+  &:hover {
+    scrollbar-width: thin;
+    scrollbar-color: #dcdfe6 transparent;
+  }
 }
 
 .conversation-item {
@@ -120,8 +159,23 @@
     background: #f5f7fa;
   }
 
-  .chat-avatar {
-    flex-shrink: 0;
+  .avatar-wrapper {
+    position: relative;
+    
+    .status-dot {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #909399;
+      border: 2px solid white;
+      
+      &.online {
+        background: #67C23A;
+      }
+    }
   }
 
   .conversation-info {
@@ -135,7 +189,7 @@
 
     .last-message {
       font-size: 12px;
-      color: #999;
+      color: #909399;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -157,7 +211,7 @@
 }
 
 .chat-details {
-  width: 300px;
+  width: 200px;
   background: white;
   padding: 24px;
 
@@ -179,6 +233,12 @@
       .profile-link {
         font-size: 13px;
         color: #409eff;
+      }
+
+      .status {
+        font-size: 12px;
+        color: #909399;
+        margin-top: 4px;
       }
     }
   }
@@ -269,7 +329,7 @@
 // Responsive styles
 @media (max-width: 1200px) {
   .chat-details {
-    width: 280px;
+    width: 200px;
   }
 }
 
@@ -318,19 +378,111 @@ const activeChat = ref(1)
 const chats = ref([
   {
     id: 1,
-    name: 'Megan',
-    avatar: 'https://avatars.githubusercontent.com/u/2?v=4',
-    lastMessage: 'New message notification has been turned off',
-    email: 'megan@example.com',
-    unread: true
+    name: 'Team Discussion',
+    avatar: 'https://avatars.githubusercontent.com/u/3?v=4',
+    lastMessage: 'Hello everyone!',
+    email: 'team@example.com',
+    unread: true,
+    status: 'Online'
   },
   {
     id: 2,
-    name: 'Friendship Link Group',
-    avatar: 'https://avatars.githubusercontent.com/u/3?v=4',
-    lastMessage: 'Latest message...',
-    email: 'group@example.com',
-    unread: false
+    name: 'Design Team',
+    avatar: 'https://avatars.githubusercontent.com/u/4?v=4',
+    lastMessage: 'New design updates available',
+    email: 'design@example.com',
+    unread: false,
+    status: 'Offline'
+  },
+  {
+    id: 3,
+    name: 'Sarah Johnson',
+    avatar: 'https://avatars.githubusercontent.com/u/5?v=4',
+    lastMessage: 'Can you review the latest mockups?',
+    email: 'sarah@example.com',
+    unread: true,
+    status: 'Online'
+  },
+  {
+    id: 4,
+    name: 'Mike Chen',
+    avatar: 'https://avatars.githubusercontent.com/u/6?v=4',
+    lastMessage: 'Meeting at 3 PM',
+    email: 'mike@example.com',
+    unread: false,
+    status: 'Offline'
+  },
+  {
+    id: 5,
+    name: 'Emma Wilson',
+    avatar: 'https://avatars.githubusercontent.com/u/7?v=4',
+    lastMessage: 'Thanks for your help!',
+    email: 'emma@example.com',
+    unread: true,
+    status: 'Active now'
+  },
+  {
+    id: 6,
+    name: 'Alex Rodriguez',
+    avatar: 'https://avatars.githubusercontent.com/u/8?v=4',
+    lastMessage: 'Project deadline updated',
+    email: 'alex@example.com',
+    unread: false,
+    status: 'Offline'
+  },
+  {
+    id: 7,
+    name: 'Lisa Wang',
+    avatar: 'https://avatars.githubusercontent.com/u/9?v=4',
+    lastMessage: 'New feature request',
+    email: 'lisa@example.com',
+    unread: true,
+    status: 'Active now'
+  },
+  {
+    id: 8,
+    name: 'David Kim',
+    avatar: 'https://avatars.githubusercontent.com/u/10?v=4',
+    lastMessage: 'Bug fixed in latest release',
+    email: 'david@example.com',
+    unread: false,
+    status: 'Away'
+  },
+  {
+    id: 9,
+    name: 'Sophie Brown',
+    avatar: 'https://avatars.githubusercontent.com/u/11?v=4',
+    lastMessage: 'Weekly report ready',
+    email: 'sophie@example.com',
+    unread: true,
+    status: 'Active now'
+  },
+  {
+    id: 10,
+    name: 'Marketing Team',
+    avatar: 'https://avatars.githubusercontent.com/u/12?v=4',
+    lastMessage: 'Campaign updates',
+    email: 'marketing@example.com',
+    unread: false,
+    status: 'Active now'
+  },
+  {
+    id: 11,
+    name: 'James Wilson',
+    avatar: 'https://avatars.githubusercontent.com/u/13?v=4',
+    lastMessage: 'Check the new analytics',
+    email: 'james@example.com',
+    unread: true,
+    status: 'Away'
+  },
+  {
+    id: 12,
+    name: 'Development Team',
+    avatar: 'https://avatars.githubusercontent.com/u/14?v=4',
+    lastMessage: 'Code review needed',
+    email: 'dev@example.com',
+    unread: false,
+    status: 'Active now'
   }
 ])
 
@@ -342,4 +494,12 @@ const recentFiles = ref([
   { id: 3, thumbnail: '/demo/thumbnail3.jpg' },
   { id: 4, thumbnail: '/demo/thumbnail4.jpg' }
 ])
+
+const emit = defineEmits(['select-chat'])
+
+const selectChat = (chat) => {
+  activeChat.value = chat.id
+  currentChat.value = chat
+  emit('select-chat', chat)
+}
 </script> 
