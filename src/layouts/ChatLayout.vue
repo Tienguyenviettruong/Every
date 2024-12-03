@@ -14,7 +14,7 @@
           :key="chat.id"
           class="conversation-item"
           :class="{ active: chat.id === activeChat }"
-          @click="activeChat = chat.id"
+          @click="selectChat(chat)"
         >
           <div class="avatar-wrapper">
             <el-avatar :src="chat.avatar" :size="32" class="chat-avatar" />
@@ -373,7 +373,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+const emit = defineEmits(['select-chat'])
 const activeChat = ref(1)
+
+const selectChat = (chat) => {
+  activeChat.value = chat.id
+  emit('select-chat', chat)
+}
 
 const chats = ref([
   {
@@ -494,12 +500,4 @@ const recentFiles = ref([
   { id: 3, thumbnail: '/demo/thumbnail3.jpg' },
   { id: 4, thumbnail: '/demo/thumbnail4.jpg' }
 ])
-
-const emit = defineEmits(['select-chat'])
-
-const selectChat = (chat) => {
-  activeChat.value = chat.id
-  currentChat.value = chat
-  emit('select-chat', chat)
-}
 </script> 

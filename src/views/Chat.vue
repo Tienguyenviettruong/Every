@@ -1,3 +1,145 @@
+<script setup lang="ts">
+import { ref, nextTick } from 'vue'
+import ChatLayout from '../layouts/ChatLayout.vue'
+import ChatFileUpload from '../components/ChatFileUpload.vue'
+import { Message, Phone, PictureFilled, Microphone, Plus, Position } from '@element-plus/icons-vue'
+
+interface FileMessage {
+  name: string
+  type: string
+  size: number
+  data: string
+  timestamp: string
+}
+
+interface ChatMessage {
+  id: number
+  sender: string
+  content: string
+  time: string
+  avatar: string
+}
+
+interface MessagesMap {
+  [key: number]: ChatMessage[]
+}
+
+const currentUser = ref({
+  name: 'wangxinhao',
+  avatar: 'https://avatars.githubusercontent.com/u/2?v=4'
+})
+
+const currentChat = ref({
+  id: 1,
+  name: 'Team Discussion',
+  status: 'Online',
+  avatar: 'https://avatars.githubusercontent.com/u/3?v=4'
+})
+
+const allMessages = ref<MessagesMap>({
+  1: [
+    {
+      id: 1,
+      sender: 'Team Discussion',
+      content: 'Welcome to team chat!',
+      time: '10:00',
+      avatar: 'https://avatars.githubusercontent.com/u/3?v=4'
+    }
+  ],
+  2: [
+    {
+      id: 2,
+      sender: 'Design Team',
+      content: 'Check out the new designs',
+      time: '09:30',
+      avatar: 'https://avatars.githubusercontent.com/u/4?v=4'
+    }
+  ],
+  3: [
+    {
+      id: 3,
+      sender: 'Sarah Johnson',
+      content: 'Hi there!',
+      time: '11:00',
+      avatar: 'https://avatars.githubusercontent.com/u/5?v=4'
+    }
+  ]
+})
+
+const messages = ref(allMessages.value[1])
+const newMessage = ref('')
+const messagesContainer = ref<HTMLElement>()
+
+const handleChatSelect = (chat) => {
+  console.log('Selected chat:', chat)
+  currentChat.value = chat
+  messages.value = allMessages.value[chat.id] || []
+  nextTick(() => {
+    scrollToBottom()
+  })
+}
+
+const sendMessage = () => {
+  if (newMessage.value.trim()) {
+    const newMsg = {
+      id: Date.now(),
+      sender: currentUser.value.name,
+      content: newMessage.value,
+      time: new Date().toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: false 
+      }),
+      avatar: currentUser.value.avatar
+    }
+
+    if (!allMessages.value[currentChat.value.id]) {
+      allMessages.value[currentChat.value.id] = []
+    }
+
+    allMessages.value[currentChat.value.id].push(newMsg)
+    messages.value = allMessages.value[currentChat.value.id]
+    
+    newMessage.value = ''
+    nextTick(() => {
+      scrollToBottom()
+    })
+  }
+}
+
+const handleFileUploaded = (fileData: FileMessage) => {
+  const newMsg = {
+    id: Date.now(),
+    sender: currentUser.value.name,
+    content: `File: ${fileData.name}`,
+    time: new Date().toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      hour12: false 
+    }),
+    avatar: currentUser.value.avatar,
+    file: fileData
+  }
+
+  if (!allMessages.value[currentChat.value.id]) {
+    allMessages.value[currentChat.value.id] = []
+  }
+
+  allMessages.value[currentChat.value.id].push(newMsg)
+  messages.value = allMessages.value[currentChat.value.id]
+  
+  nextTick(() => {
+    scrollToBottom()
+  })
+}
+
+const scrollToBottom = () => {
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+  }
+}
+</script>
+
 <template>
   <ChatLayout @select-chat="handleChatSelect">
     <div class="chat-container">
@@ -24,20 +166,34 @@
         </div>
       </div>
 
-      <div class="messages-container" ref="messagesContainer">
-        <div v-for="msg in messages" :key="msg.id" 
-             class="message" 
-             :class="{ 'message-own': msg.sender === currentUser.name }">
-          <el-avatar :src="msg.avatar" :size="24" class="message-avatar" />
-          <div class="message-content">
-            <div class="text">{{ msg.content }}</div>
-            <div class="message-footer">
-              <span class="time">{{ msg.time }}</span>
-              <span v-if="currentChat" 
-                    class="status" 
-                    :class="{'online': msg.sender === currentChat.name && currentChat.status === 'Active now'}">
-                {{ msg.sender === currentChat.name ? currentChat.status : '' }}
-              </span>
+      <div class="messages-wrapper">
+        <div class="messages-container" ref="messagesContainer">
+          <div v-for="msg in messages" :key="msg.id" 
+               class="message" 
+               :class="{ 'message-own': msg.sender === currentUser.name }">
+            <el-avatar :src="msg.avatar" :size="24" class="message-avatar" />
+            <div class="message-content">
+              <template v-if="msg.file">
+                <div class="file-message">
+                  <div class="file-preview" v-if="msg.file.type.startsWith('image/')">
+                    <img :src="msg.file.data" :alt="msg.file.name">
+                  </div>
+                  <div class="file-info">
+                    <el-icon><Document /></el-icon>
+                    <span class="file-name">{{ msg.file.name }}</span>
+                    <span class="file-size">{{ (msg.file.size / 1024).toFixed(1) }}KB</span>
+                  </div>
+                </div>
+              </template>
+              <div class="text" v-else>{{ msg.content }}</div>
+              <div class="message-footer">
+                <span class="time">{{ msg.time }}</span>
+                <span v-if="currentChat" 
+                      class="status" 
+                      :class="{'online': msg.sender === currentChat.name && currentChat.status === 'Online'}">
+                  {{ msg.sender === currentChat.name ? currentChat.status : '' }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -59,9 +215,7 @@
               <el-button type="text">
                 <el-icon><Plus /></el-icon>
               </el-button>
-              <el-button type="text">
-                <el-icon><PictureFilled /></el-icon>
-              </el-button>
+              <ChatFileUpload @file-uploaded="handleFileUploaded" />
               <el-button type="text">
                 <el-icon><Microphone /></el-icon>
               </el-button>
@@ -76,97 +230,38 @@
   </ChatLayout>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-import ChatLayout from '../layouts/ChatLayout.vue'
-import { Message, Phone, PictureFilled, Microphone, Plus, Position } from '@element-plus/icons-vue'
-
-const currentUser = ref({
-  name: 'wangxinhao',
-  avatar: 'https://avatars.githubusercontent.com/u/2?v=4'
-})
-
-const currentChat = ref({
-  id: 1,
-  name: 'Team Discussion',
-  status: 'Active now',
-  avatar: 'https://avatars.githubusercontent.com/u/3?v=4'
-})
-
-const messagesByChat = ref({
-  1: [
-    {
-      id: 1,
-      sender: 'Team Discussion',
-      content: 'Hi, how are you?',
-      time: '10:00',
-      avatar: 'https://avatars.githubusercontent.com/u/3?v=4',
-      status: 'Active now'
-    },
-    {
-      id: 2,
-      sender: 'wangxinhao',
-      content: 'I\'m good, thanks! How about you?',
-      time: '10:01',
-      avatar: currentUser.value.avatar
-    }
-  ],
-  2: [
-    {
-      id: 3,
-      sender: 'Friendship Link Group',
-      content: 'Welcome everyone!',
-      time: '09:30',
-      avatar: 'https://avatars.githubusercontent.com/u/3?v=4',
-      status: 'Offline'
-    }
-  ]
-})
-
-const messages = ref(messagesByChat.value[1])
-
-const newMessage = ref('')
-const messagesContainer = ref<HTMLElement>()
-
-const handleChatSelect = (chat) => {
-  currentChat.value = {
-    ...chat,
-    status: chat.status || 'Offline'
-  }
-  messages.value = messagesByChat.value[chat.id] || []
-  scrollToBottom()
-}
-
-const sendMessage = () => {
-  if (newMessage.value.trim()) {
-    const newMsg = {
-      id: Date.now(),
-      sender: currentUser.value.name,
-      content: newMessage.value,
-      time: new Date().toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        hour12: false 
-      }),
-      avatar: currentUser.value.avatar
-    }
-    
-    messages.value.push(newMsg)
-    messagesByChat.value[currentChat.value.id] = messages.value
-    
-    newMessage.value = ''
-    scrollToBottom()
-  }
-}
-
-const scrollToBottom = () => {
-  if (messagesContainer.value) {
-    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
-  }
-}
-</script>
-
 <style scoped lang="scss">
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.chat-header {
+  flex-shrink: 0;
+}
+
+.messages-wrapper {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow-y: hidden;
+}
+
+.messages-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.chat-input {
+  flex-shrink: 0;
+}
+
 .chat-container {
   font-family: "Times New Roman", Times, serif;
   display: flex;
@@ -224,25 +319,17 @@ const scrollToBottom = () => {
   padding: 20px;
 
   .message {
-    margin-bottom: 16px;
     display: flex;
-    
-    &.message-own {
-      justify-content: flex-end;
-      
-      .message-content {
-        .text {
-          background: var(--el-color-primary);
-          color: white;
-        }
-        
-        .message-footer {
-          color: var(--el-text-color-secondary);
-        }
-      }
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    .message-avatar {
+      order: 1;
     }
 
     .message-content {
+      order: 2;
       max-width: 70%;
 
       .text {
@@ -256,6 +343,17 @@ const scrollToBottom = () => {
         font-size: 12px;
         color: var(--el-text-color-secondary);
         text-align: right;
+      }
+    }
+
+    &.message-own {
+      flex-direction: row-reverse;
+      
+      .message-content {
+        .text {
+          background: var(--el-color-primary);
+          color: white;
+        }
       }
     }
   }
@@ -402,4 +500,4 @@ const scrollToBottom = () => {
     }
   }
 }
-</style> 
+</style>
