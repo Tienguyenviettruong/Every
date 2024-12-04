@@ -376,7 +376,7 @@ import { ref } from 'vue'
 const emit = defineEmits(['select-chat'])
 const activeChat = ref(1)
 
-const selectChat = (chat) => {
+const selectChat = (chat: any) => {
   activeChat.value = chat.id
   emit('select-chat', chat)
 }

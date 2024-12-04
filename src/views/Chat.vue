@@ -2,7 +2,7 @@
 import { ref, nextTick } from 'vue'
 import ChatLayout from '../layouts/ChatLayout.vue'
 import ChatFileUpload from '../components/ChatFileUpload.vue'
-import { Message, Phone, PictureFilled, Microphone, Plus, Position } from '@element-plus/icons-vue'
+import { Message, Phone, Microphone, Plus, Position } from '@element-plus/icons-vue'
 
 interface FileMessage {
   name: string
@@ -18,6 +18,7 @@ interface ChatMessage {
   content: string
   time: string
   avatar: string
+  file?: FileMessage
 }
 
 interface MessagesMap {
@@ -70,7 +71,7 @@ const messages = ref(allMessages.value[1])
 const newMessage = ref('')
 const messagesContainer = ref<HTMLElement>()
 
-const handleChatSelect = (chat) => {
+const handleChatSelect = (chat: { id: number; name: string; status: string; avatar: string; } | { id: number; name: string; status: string; avatar: string; }) => {
   console.log('Selected chat:', chat)
   currentChat.value = chat
   messages.value = allMessages.value[chat.id] || []

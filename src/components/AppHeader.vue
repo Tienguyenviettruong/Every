@@ -3,7 +3,9 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { ref, onUnmounted, onMounted, computed } from 'vue'
 import { Search } from '@element-plus/icons-vue'
+import { invoke } from '@tauri-apps/api/core'
 import avatar from '../assets/avatar/avatar.jpg'
+
 const { t, locale } = useI18n()
 const router = useRouter()
 
@@ -31,6 +33,14 @@ const handleKeydown = (e: KeyboardEvent) => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault()
     showSearch.value = true
+  }
+}
+
+const openChatWindow = async () => {
+  try {
+    await invoke('open_chat_window')
+  } catch (error) {
+    console.error('Failed to open chat window:', error)
   }
 }
 
@@ -72,6 +82,12 @@ const isMac = computed(() => {
           <ArrowLeft />
         </el-icon>
         Back
+      </el-button>
+      
+      <el-button type="text" @click="openChatWindow">
+        <el-icon :size="20">
+          <ChatDotRound />
+        </el-icon>
       </el-button>
       
       <el-dropdown @command="changeLanguage">

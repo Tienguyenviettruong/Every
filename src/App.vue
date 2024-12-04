@@ -14,6 +14,10 @@ const showDefaultSidebar = computed(() => {
   return !route.meta.layout || route.meta.layout !== 'optimize' && route.meta.layout !== 'lab'
 })
 
+const showDefaultLayout = computed(() => {
+  return !route.meta.layout || route.meta.layout !== 'chat'
+})
+
 const toggleSidebar = () => {
   isCollapsed.value = !isCollapsed.value
 }
@@ -22,6 +26,12 @@ const toggleSidebar = () => {
 <template>
   <template v-if="route.meta.requiresAuth === false">
     <router-view />
+  </template>
+  <template v-else-if="!showDefaultLayout">
+    <!-- Chat layout without header, footer, and sidebar -->
+    <main class="chat-content">
+      <router-view />
+    </main>
   </template>
   <div v-else class="layout">
     <header class="header">
@@ -70,6 +80,11 @@ const toggleSidebar = () => {
   padding-bottom: var(--footer-height);
   display: flex;
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+
+.chat-content {
+  height: 100vh;
+  width: 100vw;
 }
 
 .sidebar {
