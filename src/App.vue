@@ -5,6 +5,7 @@ import { useTheme } from './composables/useTheme'
 import AppHeader from './components/AppHeader.vue'
 import AppSidebar from './components/AppSidebar.vue'
 import AppFooter from './components/AppFooter.vue'
+import ChatSidebar from './components/chat/ChatSidebar.vue'
 
 const route = useRoute()
 const { isDark, toggleTheme } = useTheme()
@@ -28,10 +29,12 @@ const toggleSidebar = () => {
     <router-view />
   </template>
   <template v-else-if="!showDefaultLayout">
-    <!-- Chat layout without header, footer, and sidebar -->
-    <main class="chat-content">
-      <router-view />
-    </main>
+    <div class="chat-layout">
+      <ChatSidebar />
+      <main class="chat-content">
+        <router-view />
+      </main>
+    </div>
   </template>
   <div v-else class="layout">
     <header class="header">
@@ -82,9 +85,25 @@ const toggleSidebar = () => {
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
 }
 
-.chat-content {
+.chat-layout {
+  display: flex;
   height: 100vh;
   width: 100vw;
+  background: #343541;
+}
+
+.chat-sidebar {
+  width: 48px;
+  min-width: 48px;
+  height: 100%;
+  background: transparent;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-content {
+  flex: 1;
+  height: 100%;
+  // background: #343541;
 }
 
 .sidebar {

@@ -1,6 +1,6 @@
 <template>
   <div class="chat-layout">
-    <aside class="chat-sidebar">
+    <aside class="chat-conversation-sidebar">
       <div class="sidebar-header">
         <div class="header-title">Inbox</div>
         <el-button type="primary" class="compose-btn">
@@ -77,15 +77,14 @@
   font-family: "Times New Roman", Times, serif;
   display: flex;
   min-height: calc(100vh - var(--header-height) - var(--footer-height) - 42px);
-  border-radius: 20px;
   background: #f5f7fa;
   border: 1px solid #e6e6e6;
 //   margin: 20px;
   overflow: hidden;
 }
 
-.chat-sidebar {
-  width: 280px;
+.chat-conversation-sidebar {
+  width: 240px;
   background: white;
   border-right: 1px solid #e6e6e6;
   display: flex;
@@ -334,13 +333,13 @@
 }
 
 @media (max-width: 992px) {
-  .chat-sidebar {
+  .chat-conversation-sidebar {
     width: 240px;
   }
 }
 
 @media (max-width: 768px) {
-  .chat-sidebar, .chat-details {
+  .chat-conversation-sidebar, .chat-details {
     position: fixed;
     top: 0;
     bottom: calc(var(--footer-height) + 10px);
@@ -348,7 +347,7 @@
     background: white;
   }
 
-  .chat-sidebar {
+  .chat-conversation-sidebar {
     left: 0;
     transform: translateX(-100%);
     transition: transform 0.3s;
@@ -359,7 +358,7 @@
   }
 
   .chat-details {
-    right: 0;
+    right: 10;
     transform: translateX(100%);
     transition: transform 0.3s;
 

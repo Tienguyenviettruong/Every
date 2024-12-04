@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import type { MenuItem } from '@/types'
 
 const { t } = useI18n()
-
-interface MenuItem {
-  icon: string
-  title: string
-  path: string
-}
 
 interface Props {
   isCollapsed: boolean

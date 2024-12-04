@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
 import ChatLayout from '../layouts/ChatLayout.vue'
-import ChatFileUpload from '../components/ChatFileUpload.vue'
+import ChatFileUpload from '../components/chat/ChatFileUpload.vue'
 import { Message, Phone, Microphone, Plus, Position } from '@element-plus/icons-vue'
 
 interface FileMessage {
