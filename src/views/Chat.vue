@@ -271,7 +271,7 @@ const scrollToBottom = () => {
 }
 
 .chat-header {
-  padding: 16px;
+  padding: 12px;
   border-bottom: 1px solid var(--el-border-color-lighter);
   display: flex;
   justify-content: space-between;
@@ -339,7 +339,48 @@ const scrollToBottom = () => {
         border-radius: 8px;
         margin-bottom: 4px;
       }
+      .file-message {
+        background: var(--el-fill-color-lighter);
+        border-radius: 8px;
+        overflow: hidden;
 
+        .file-preview {
+          width: 100%;
+          max-height: 200px;
+          overflow: hidden;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+      .file-info {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 12px;
+          
+          .el-icon {
+            font-size: 20px;
+            color: var(--el-color-primary);
+          }
+          
+          .file-name {
+            flex: 1;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          
+          .file-size {
+            font-size: 12px;
+            color: var(--el-text-color-secondary);
+          }
+        }
+      
       .message-footer {
         font-size: 12px;
         color: var(--el-text-color-secondary);

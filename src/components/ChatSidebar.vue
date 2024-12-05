@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { ChatConversation } from '@/types'
 
 const router = useRouter()
-const conversations = ref<ChatConversation[]>([
+const conversations = ref([
   { id: 1, title: 'Chat 1', timestamp: '2024-03-20 10:00' },
   { id: 2, title: 'Chat 2', timestamp: '2024-03-20 11:30' },
 ])
@@ -74,11 +73,8 @@ const selectChat = (id: number) => {
 
 <style scoped lang="scss">
 .chat-sidebar-container {
-  width: 48px;
-  min-width: 48px;
   height: 100%;
-  //background: transparent;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  width: 48px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

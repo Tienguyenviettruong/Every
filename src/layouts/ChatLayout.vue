@@ -1,11 +1,19 @@
 <template>
-  <div class="chat-layout">
+  <div class="chat-main-layout">
     <aside class="chat-conversation-sidebar">
       <div class="sidebar-header">
-        <div class="header-title">Inbox</div>
-        <el-button type="primary" class="compose-btn">
-          + New Conversation
-        </el-button>
+          <div class="search-wrapper">
+            <el-input
+              placeholder="Search conversations..."
+              prefix-icon="Search"
+              clearable
+              :border="false"
+              class="no-border"
+            />
+            <el-button plain circle>
+              <el-icon><Plus /></el-icon>
+            </el-button>
+          </div>
       </div>
       
       <div class="conversations">
@@ -73,10 +81,10 @@
 </template>
 
 <style scoped lang="scss">
-.chat-layout {
+.chat-main-layout {
   font-family: "Times New Roman", Times, serif;
   display: flex;
-  min-height: calc(100vh - var(--header-height) - var(--footer-height) - 42px);
+  height: calc(100% - 2px);
   background: #f5f7fa;
   border: 1px solid #e6e6e6;
 //   margin: 20px;
@@ -84,7 +92,7 @@
 }
 
 .chat-conversation-sidebar {
-  width: 240px;
+  width: 250px;
   background: white;
   border-right: 1px solid #e6e6e6;
   display: flex;
@@ -92,7 +100,7 @@
 }
 
 .sidebar-header {
-  padding: 20px;
+  padding: 12px;
   border-bottom: 1px solid #e6e6e6;
 
   .header-title {
@@ -104,6 +112,16 @@
   .compose-btn {
     width: 100%;
     height: 36px;
+  }
+
+  .search-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    .el-input {
+      flex: 1;
+    }
   }
 }
 
@@ -212,7 +230,7 @@
 .chat-details {
   width: 200px;
   background: white;
-  padding: 24px;
+  padding: 12px;
 
   .user-profile {
     text-align: center;
@@ -328,13 +346,13 @@
 // Responsive styles
 @media (max-width: 1200px) {
   .chat-details {
-    width: 200px;
+    width: 120px;
   }
 }
 
 @media (max-width: 992px) {
   .chat-conversation-sidebar {
-    width: 240px;
+    width: 200px;
   }
 }
 
