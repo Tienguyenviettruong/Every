@@ -13,7 +13,8 @@ const props = withDefaults(defineProps<Props>(), {
   menuItems: () => [
     { icon: 'HomeFilled', title: 'menu.dashboard', path: '/' },
     { icon: 'Connection', title: 'menu.lifecycle', path: '/lifecycle' },
-    { icon: 'DataAnalysis', title: 'menu.lab', path: '/lab' }
+    { icon: 'DataAnalysis', title: 'menu.lab', path: '/lab' },
+    { icon: 'Share', title: 'menu.workflow', path: '/workflow' }
   ]
 })
 

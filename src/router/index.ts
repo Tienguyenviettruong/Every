@@ -5,6 +5,7 @@ import Lifecycle from '../views/Lifecycle1.vue'
 import Optimize from '../views/Optimize.vue'
 import Lab from '../views/Lab.vue'
 import Chat from '../views/Chat.vue'
+import Workflow from '../views/Workflow.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -52,6 +53,12 @@ const router = createRouter({
         requiresAuth: true,
         layout: 'chat'
       }
+    },
+    {
+      path: '/workflow',
+      name: 'Workflow',
+      component: Workflow,
+      meta: { requiresAuth: true }
     }
   ]
 })
