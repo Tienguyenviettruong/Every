@@ -3,34 +3,33 @@ const workflowBlocks = [
   {
     category: 'General',
     items: [
-      { type: 'Trigger', icon: 'Lightning', description: 'Start workflow', color: '#FFD43B' },
-      { type: 'Execute Workflow', icon: 'Connection', description: 'Run another workflow', color: '#E9ECEF' },
-      { type: 'Delay', icon: 'Timer', description: 'Add time delay', color: '#E9ECEF' },
-      { type: 'Export Data', icon: 'Download', description: 'Export workflow data', color: '#E9ECEF' },
-      { type: 'Repeat Task', icon: 'RefreshRight', description: 'Repeat an action', color: '#E9ECEF' },
-      { type: 'HTTP Request', icon: 'Connection', description: 'Make API calls', color: '#E9ECEF' },
-      { type: 'While Loop', icon: 'CircleClose', description: 'Loop while condition', color: '#E9ECEF' },
-      { type: 'Loop Data', icon: 'RefreshLeft', description: 'Loop through data', color: '#E9ECEF' },
-      { type: 'Loop Break', icon: 'CircleClose', description: 'Break from loop', color: '#E9ECEF' },
-      { type: 'Blocks Group', icon: 'Files', description: 'Group of blocks', color: '#E9ECEF' },
-      { type: 'Clipboard', icon: 'Document', description: 'Copy to clipboard', color: '#E9ECEF' },
-      { type: 'Insert Data', icon: 'DocumentAdd', description: 'Insert data', color: '#E9ECEF' }
+      { type: 'Trigger', icon: 'Lightning', description: 'Start workflow', color: '#FFE69C' },
+      { type: 'Execute Workflow', icon: 'Connection', description: 'Run another workflow', color: '#FFD6D6' },
+      { type: 'Delay', icon: 'Timer', description: 'Add time delay', color: '#D4F0FF' },
+      { type: 'Export Data', icon: 'Download', description: 'Export workflow data', color: '#E8FFE8' },
+      { type: 'Repeat Task', icon: 'RefreshRight', description: 'Repeat an action', color: '#FFE8F7' },
+      { type: 'HTTP Request', icon: 'Connection', description: 'Make API calls', color: '#E6E6FF' },
+      { type: 'While Loop', icon: 'CircleClose', description: 'Loop while condition', color: '#FFF0E6' },
+      { type: 'Loop Data', icon: 'RefreshLeft', description: 'Loop through data', color: '#F0FFE6' },
+      { type: 'Loop Break', icon: 'CircleClose', description: 'Break from loop', color: '#FFE6F0' },
+      { type: 'Blocks Group', icon: 'Files', description: 'Group of blocks', color: '#E6FFF0' },
+      { type: 'Clipboard', icon: 'Document', description: 'Copy to clipboard', color: '#F7E8FF' },
+      { type: 'Insert Data', icon: 'DocumentAdd', description: 'Insert data', color: '#FFE8E8' }
     ]
   }
 ]
 
-const onDragStart = (event: DragEvent, block: any) => {
-  if (event.dataTransfer) {
-    const nodeData = {
-      type: block.type,
-      icon: block.icon,
-      color: block.color
-    }
-    event.dataTransfer.setData('application/json', JSON.stringify(nodeData))
-    event.dataTransfer.effectAllowed = 'move'
-    
-    console.log('Drag started:', nodeData)
+const emit = defineEmits<{
+  (e: 'add-node', nodeData: any): void 
+}>()
+
+const handleBlockClick = (block: any) => {
+  const nodeData = {
+    type: block.type,
+    icon: block.icon,
+    color: block.color
   }
+  emit('add-node', nodeData)
 }
 </script>
 
@@ -57,8 +56,7 @@ const onDragStart = (event: DragEvent, block: any) => {
             :key="block.type"
             class="workflow-block"
             :style="{ '--block-color': block.color }"
-            draggable="true"
-            @dragstart="onDragStart($event, block)"
+            @click="handleBlockClick(block)"
           >
             <el-icon><component :is="block.icon" /></el-icon>
             <div class="block-info">
@@ -132,7 +130,7 @@ const onDragStart = (event: DragEvent, block: any) => {
   padding: 12px;
   background: var(--block-color);
   border-radius: 8px;
-  cursor: move;
+  cursor: pointer;
   transition: all 0.2s;
   user-select: none;
   
