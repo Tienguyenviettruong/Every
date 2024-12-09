@@ -8,7 +8,7 @@ import Sidebar from '../components/workflow/Sidebar.vue'
 import WorkflowControls from '../components/workflow/WorkflowControls.vue'
 import { useWorkflowStore } from '../stores/workflow'
 import { useWorkflowNodes } from '../composables/useWorkflowNodes'
-import { FullScreen, Remove, Plus } from '@element-plus/icons-vue'
+import { FullScreen, Remove, Plus, Document, List, VideoPlay, Connection, Share, Grid, DataLine, Setting, More } from '@element-plus/icons-vue'
 
 import '@vue-flow/core/dist/style.css'
 import '@vue-flow/core/dist/theme-default.css'
@@ -59,44 +59,107 @@ const toggleFullscreen = () => {
 
 const zoomIn = () => vfZoomIn(0.2)
 const zoomOut = () => vfZoomOut(0.2)
+
+const activeTab = ref('editor')
 </script>
 
 <template>
   <div class="workflow-container">
-    <Sidebar @add-node="handleAddNode" />
-    <div class="workflow-content">
-      <VueFlow
-        v-model="nodes"
-        v-model:edges="edges"
-        :node-types="nodeTypes"
-        :default-viewport="{ zoom: 1.5 }"
-        :min-zoom="0.2"
-        :max-zoom="4"
-        class="workflow"
-        fit-view-on-init
-      >
-        <template #panel-top-center>
-          <WorkflowControls 
-            @clear="handleClearWorkflow"
-            @run="handleRunWorkflow"
-          />
-        </template>
-        <template #panel-bottom-right>
-          <div class="workflow-controls">
-            <el-button-group>
-              <el-button @click="toggleFullscreen">
-                <el-icon><FullScreen /></el-icon>
+    <div class="workflow-main">
+      <Sidebar @add-node="handleAddNode" />
+      <div class="workflow-content">
+        <div class="workflow-header">
+          <div class="left-controls">
+            <el-button-group class="tab-group">
+              <el-button :class="{ active: activeTab === 'editor' }" @click="activeTab = 'editor'">
+                <el-icon><Document /></el-icon>
+                Editor
               </el-button>
-              <el-button @click="zoomOut">
-                <el-icon><Remove /></el-icon>
+              <el-button :class="{ active: activeTab === 'logs' }" @click="activeTab = 'logs'">
+                <el-icon><List /></el-icon>
+                Logs
               </el-button>
-              <el-button @click="zoomIn">
-                <el-icon><Plus /></el-icon>
+              <el-button :class="{ active: activeTab === 'running' }" @click="activeTab = 'running'">
+                <el-icon><VideoPlay /></el-icon>
+                Running
               </el-button>
             </el-button-group>
           </div>
-        </template>
-      </VueFlow>
+          <div class="right-controls">
+            <el-button-group class="icon-group">
+              <el-tooltip content="Connect" placement="bottom">
+                <el-button>
+                  <el-icon><Connection /></el-icon>
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="Share" placement="bottom">
+                <el-button>
+                  <el-icon><Share /></el-icon>
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="Grid" placement="bottom">
+                <el-button>
+                  <el-icon><Grid /></el-icon>
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="Data" placement="bottom">
+                <el-button>
+                  <el-icon><DataLine /></el-icon>
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="Settings" placement="bottom">
+                <el-button>
+                  <el-icon><Setting /></el-icon>
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="Play" placement="bottom">
+                <el-button>
+                  <el-icon><VideoPlay /></el-icon>
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="More" placement="bottom">
+                <el-button>
+                  <el-icon><More /></el-icon>
+                </el-button>
+              </el-tooltip>
+            </el-button-group>
+            <el-button type="primary">Save</el-button>
+          </div>
+        </div>
+        <div class="workflow-canvas">
+          <VueFlow
+            v-model="nodes"
+            v-model:edges="edges"
+            :node-types="nodeTypes"
+            :default-viewport="{ zoom: 1.5 }"
+            :min-zoom="0.2"
+            :max-zoom="4"
+            class="workflow"
+            fit-view-on-init
+          >
+            <template #panel-top-center>
+              <WorkflowControls 
+                @clear="handleClearWorkflow"
+                @run="handleRunWorkflow"
+              />
+            </template>
+            <div class="workflow-zoom-controls">
+              <el-button-group>
+                <el-tooltip content="Zoom Out" placement="right">
+                  <el-button @click="zoomOut">
+                    <el-icon><Remove /></el-icon>
+                  </el-button>
+                </el-tooltip>
+                <el-tooltip content="Zoom In" placement="right">
+                  <el-button @click="zoomIn">
+                    <el-icon><Plus /></el-icon>
+                  </el-button>
+                </el-tooltip>
+              </el-button-group>
+            </div>
+          </VueFlow>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -112,10 +175,75 @@ const zoomOut = () => vfZoomOut(0.2)
   border: 1px solid var(--el-border-color);
 }
 
+.workflow-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
 .workflow-content {
   flex: 1;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.workflow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--el-border-color-light);
+  background: var(--el-bg-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  .left-controls, .right-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .tab-group {
+    .el-button {
+      padding: 8px 16px;
+      border: 1px solid var(--el-border-color-light);
+      
+      &.active {
+        background: var(--el-color-primary);
+        color: white;
+        border-color: var(--el-color-primary);
+      }
+      
+      &:not(.active):hover {
+        background: var(--el-color-primary-light-9);
+      }
+    }
+  }
+
+  .icon-group {
+    .el-button {
+      padding: 8px;
+      border: 1px solid var(--el-border-color-light);
+      
+      &:hover {
+        background: var(--el-color-primary-light-9);
+      }
+    }
+  }
+
+  .el-button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
+
+.workflow-canvas {
+  flex: 1;
   position: relative;
+  overflow: hidden;
 }
 
 .workflow {
@@ -149,4 +277,41 @@ const zoomOut = () => vfZoomOut(0.2)
     }
   }
 }
+
+.workflow-zoom-controls {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 100;
+  background: var(--el-bg-color);
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  
+  .el-button-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .el-button {
+    padding: 8px;
+    border: 1px solid var(--el-border-color-light);
+    
+    &:hover {
+      background: var(--el-color-primary-light-9);
+    }
+    
+    &:first-child {
+      border-bottom: none;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    
+    &:last-child {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+}
 </style>
+</```
+rewritten_file>

@@ -12,10 +12,13 @@ defineProps<{
 </script>
 
 <template>
-  <div class="custom-node" :class="data.type" :style="{ borderColor: data.color }">
+  <div class="custom-node" :class="data.type" :style="{ 
+    borderColor: data.color,
+    backgroundColor: `${data.color}10` 
+  }">
     <Handle type="target" :position="Position.Left" />
     <div class="custom-node-content">
-      <el-icon class="node-icon" :style="{ color: data.color }">
+      <el-icon class="node-icon" :style="{ color: data.color, opacity: 0.9 }">
         <component :is="data.icon" />
       </el-icon>
       <div class="node-label">{{ data.label }}</div>
@@ -28,7 +31,6 @@ defineProps<{
 .custom-node {
   padding: 12px;
   border-radius: 8px;
-  background: var(--el-bg-color);
   border: 2px solid;
   min-width: 150px;
   cursor: grab;
@@ -47,6 +49,8 @@ defineProps<{
 
 .node-icon {
   font-size: 20px;
+  font-weight: bold;
+  filter: saturate(1.5);
 }
 
 .node-label {

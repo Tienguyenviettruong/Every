@@ -12,7 +12,8 @@ const messages = {
       profile: 'Profile',
       settings: 'Settings',
       lab: 'Analysis Lab',
-      chat: 'Chat'
+      chat: 'Chat',
+      workflow:'Workflow'
     },
     header: {
       profile: 'Profile',
