@@ -7,13 +7,13 @@ import CustomNode from '../components/workflow/CustomNode.vue'
 import Sidebar from '../components/workflow/Sidebar.vue'
 import WorkflowControls from '../components/workflow/WorkflowControls.vue'
 import { useWorkflowStore } from '../stores/workflow'
-import { useWorkflowNodes } from '../composables/useWorkflowNodes'
+import useWorkflowNodes from '../composables/useWorkflowNodes'
 import { FullScreen, Remove, Plus, Document, List, VideoPlay, Connection, Share, Grid, DataLine, Setting, More } from '@element-plus/icons-vue'
 
 import '@vue-flow/core/dist/style.css'
 import '@vue-flow/core/dist/theme-default.css'
 
-const { onConnect, addEdges, zoomIn: vfZoomIn, zoomOut: vfZoomOut } = useVueFlow()
+const { onConnect, addEdges, removeNodes, zoomIn: vfZoomIn, zoomOut: vfZoomOut } = useVueFlow()
 const workflowStore = useWorkflowStore()
 const { addNewNode } = useWorkflowNodes(uuidv4)
 
@@ -31,6 +31,10 @@ onConnect((params) => {
     target: params.target
   }])
 })
+
+const handleDeleteNode = (nodeId: string) => {
+  removeNodes([{ id: nodeId }])
+}
 
 const handleClearWorkflow = () => {
   nodes.value = []
@@ -137,6 +141,9 @@ const activeTab = ref('editor')
             class="workflow"
             fit-view-on-init
           >
+            <template #node-custom="nodeProps">
+              <CustomNode v-bind="nodeProps" @delete-node="handleDeleteNode" />
+            </template>
             <template #panel-top-center>
               <WorkflowControls 
                 @clear="handleClearWorkflow"
@@ -313,5 +320,3 @@ const activeTab = ref('editor')
   }
 }
 </style>
-</```
-rewritten_file>

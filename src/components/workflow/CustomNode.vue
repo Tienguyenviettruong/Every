@@ -1,14 +1,24 @@
 <script setup lang="ts">
 import { Position, Handle } from '@vue-flow/core'
+import { Delete } from '@element-plus/icons-vue'
 
-defineProps<{
+const props = defineProps<{
   data: {
     label: string
     icon: string
     type: string
     color: string
   }
+  id: string
 }>()
+
+const emit = defineEmits<{
+  (e: 'deleteNode', nodeId: string): void
+}>()
+
+const handleDelete = () => {
+  emit('deleteNode', props.id)
+}
 </script>
 
 <template>
@@ -22,6 +32,14 @@ defineProps<{
         <component :is="data.icon" />
       </el-icon>
       <div class="node-label">{{ data.label }}</div>
+      <el-button
+        class="delete-button"
+        type="danger"
+        :icon="Delete"
+        circle
+        size="small"
+        @click.stop="handleDelete"
+      />
     </div>
     <Handle type="source" :position="Position.Right" />
   </div>
@@ -35,6 +53,7 @@ defineProps<{
   min-width: 150px;
   cursor: grab;
   user-select: none;
+  position: relative;
 
   &:active {
     cursor: grabbing;
@@ -45,6 +64,7 @@ defineProps<{
   display: flex;
   align-items: center;
   gap: 8px;
+  position: relative;
 }
 
 .node-icon {
@@ -56,5 +76,23 @@ defineProps<{
 .node-label {
   font-size: 14px;
   font-weight: 500;
+  flex: 1;
+}
+
+.delete-button {
+  opacity: 0;
+  transition: opacity 0.2s;
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  
+  :deep(.el-icon) {
+    font-size: 12px;
+  }
+}
+
+.custom-node:hover .delete-button {
+  opacity: 1;
 }
 </style>
