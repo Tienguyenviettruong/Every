@@ -72,35 +72,37 @@ const handleBlockClick = (block: any) => {
 
 <style lang="scss" scoped>
 .workflow-sidebar {
-  width: 300px;
-  background: #f8f9fa;
-  border-right: 1px solid #dee2e6;
+  width: 240px;
+  background: var(--el-bg-color);
+  border-right: 1px solid var(--el-border-color-light);
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .search-container {
   padding: 16px;
-  border-bottom: 1px solid #dee2e6;
-  
-  .search-input {
-    :deep(.el-input__wrapper) {
-      background: #fff;
-      box-shadow: none;
-      border: 1px solid #dee2e6;
-      
-      &:hover, &:focus {
-        border-color: var(--el-color-primary);
-      }
+  border-bottom: 1px solid var(--el-border-color-light);
+}
+
+.search-input {
+  :deep(.el-input__wrapper) {
+    background: #fff;
+    box-shadow: none;
+    border: 1px solid #dee2e6;
+    
+    &:hover, &:focus {
+      border-color: var(--el-color-primary);
     }
   }
 }
 
 .sidebar-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
 }
 
 .category-header {
@@ -128,40 +130,46 @@ const handleBlockClick = (block: any) => {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: var(--block-color);
   border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  user-select: none;
-  
-  &:hover {
-    transform: translateX(4px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .el-icon {
-    font-size: 20px;
-    color: #495057;
-  }
-  
-  .block-info {
-    flex: 1;
-    
-    .block-title {
-      font-size: 14px;
-      font-weight: 500;
-      color: #212529;
-      margin-bottom: 2px;
-    }
-    
-    .block-description {
-      font-size: 12px;
-      color: #6c757d;
-    }
-  }
+  background: var(--block-color);
+  cursor: grab;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-:deep(.el-icon) {
-  vertical-align: middle;
+.workflow-block:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.workflow-block:active {
+  cursor: grabbing;
+}
+
+.workflow-block .el-icon {
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+}
+
+.workflow-block .block-info {
+  flex: 1;
+}
+
+.workflow-block .block-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+  margin-bottom: 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.workflow-block .block-description {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
 }
 </style>

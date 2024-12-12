@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Position, Handle } from '@vue-flow/core'
 import { Delete } from '@element-plus/icons-vue'
+import type { NodeStatus } from '../../types/workflow'
 
 const props = defineProps<{
   data: {
@@ -8,9 +9,12 @@ const props = defineProps<{
     icon: string
     type: string
     color: string
+    status: NodeStatus
   }
   id: string
 }>()
+
+console.log(`Node ID: ${props.id}, Status: ${props.data.status}`); // Log status
 
 const emit = defineEmits<{
   (e: 'deleteNode', nodeId: string): void
@@ -19,27 +23,64 @@ const emit = defineEmits<{
 const handleDelete = () => {
   emit('deleteNode', props.id)
 }
+
+const getStatusColor = (status: NodeStatus) => {
+  switch (status) {
+    case 'running':
+      return '#409EFF'
+    case 'completed':
+      return '#67C23A'
+    case 'error':
+      return '#F56C6C'
+    default:
+      return props.data.color
+  }
+}
+
+const getStatusIcon = (status: NodeStatus) => {
+  switch (status) {
+    case 'running':
+      return 'Loading'
+    case 'completed':
+      return 'Select'
+    case 'error':
+      return 'CircleClose'
+    default:
+      return props.data.icon
+  }
+}
 </script>
 
 <template>
-  <div class="custom-node" :class="data.type" :style="{ 
-    borderColor: data.color,
-    backgroundColor: `${data.color}10` 
-  }">
+  <div 
+    class="custom-node" 
+    :class="[data.type, data.status]" 
+    :style="{ 
+      borderColor: getStatusColor(data.status),
+      backgroundColor: `${getStatusColor(data.status)}10` 
+    }"
+  >
     <Handle type="target" :position="Position.Left" />
     <div class="custom-node-content">
-      <el-icon class="node-icon" :style="{ color: data.color, opacity: 0.9 }">
-        <component :is="data.icon" />
-      </el-icon>
-      <div class="node-label">{{ data.label }}</div>
-      <el-button
-        class="delete-button"
-        type="danger"
-        :icon="Delete"
-        circle
-        size="small"
-        @click.stop="handleDelete"
-      />
+      <div class="custom-node__header">
+        <el-icon class="node-icon" :style="{ color: getStatusColor(data.status) }">
+          <component :is="getStatusIcon(data.status)" />
+        </el-icon>
+        <span class="node-label">{{ data.label }}</span>
+        <el-button
+          class="delete-button"
+          type="danger"
+          circle
+          size="small"
+          @click.stop="$emit('deleteNode', id)"
+          :disabled="data.status === 'running'"
+        >
+          <el-icon><Delete /></el-icon>
+        </el-button>
+      </div>
+      <div class="node-status" v-if="data.status !== 'idle'" :style="{ color: getStatusColor(data.status) }">
+        {{ data.status }}
+      </div>
     </div>
     <Handle type="source" :position="Position.Right" />
   </div>
@@ -54,45 +95,82 @@ const handleDelete = () => {
   cursor: grab;
   user-select: none;
   position: relative;
+  transition: all 0.3s ease;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
 
   &:active {
     cursor: grabbing;
   }
-}
 
-.custom-node-content {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-}
+  &.running {
+    animation: pulse 1.5s infinite;
+  }
 
-.node-icon {
-  font-size: 20px;
-  font-weight: bold;
-  filter: saturate(1.5);
-}
+  .custom-node-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 
-.node-label {
-  font-size: 14px;
-  font-weight: 500;
-  flex: 1;
-}
+  .custom-node__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-.delete-button {
-  opacity: 0;
-  transition: opacity 0.2s;
-  position: absolute;
-  right: -8px;
-  top: 50%;
-  transform: translateY(-50%);
-  
-  :deep(.el-icon) {
+  .node-icon {
+    font-size: 24px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+  }
+
+  .node-label {
+    font-size: 14px;
+    font-weight: 600;
+    flex-grow: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .delete-button {
+    padding: 4px;
+    height: 24px;
+    width: 24px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover .delete-button {
+    opacity: 1;
+  }
+
+  .node-status {
     font-size: 12px;
+    text-align: center;
+    font-weight: 600;
+    text-transform: lowercase;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   }
 }
 
-.custom-node:hover .delete-button {
-  opacity: 1;
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(64, 158, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(64, 158, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(64, 158, 255, 0);
+  }
 }
 </style>

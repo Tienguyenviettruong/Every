@@ -125,7 +125,7 @@ const toggleSidebar = () => {
 .content {
   flex: 1;
   margin-left: var(--sidebar-width);
-  padding: 20px;
+  padding: 10px;
   background: var(--el-bg-color-page);
   min-height: 100%;
   transition: margin-left 0.3s;
