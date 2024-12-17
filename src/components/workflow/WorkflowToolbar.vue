@@ -3,44 +3,45 @@ import { ref, computed } from 'vue'
 import { useWorkflowStore } from '../../stores/workflow'
 import { ElMessage } from 'element-plus'
 import {
-  Connection,
-  VideoPlay,
-  VideoPause,
   Delete,
+  Connection,
   Back,
   Right,
-  ZoomIn,
-  ZoomOut,
-  FullScreen,
-  Aim,
-  Plus,
+  VideoPlay,
+  VideoPause,
   Download,
-  Upload
+  Upload,
+  Share,
+  Grid,
+  List,
+  Setting,
+  More,
+  Picture
 } from '@element-plus/icons-vue'
 
-defineEmits<{
-  (e: 'zoom-in'): void
-  (e: 'zoom-out'): void
-  (e: 'toggle-fullscreen'): void
-  (e: 'run'): void
-  (e: 'save'): void
-  (e: 'export'): void
-  (e: 'clear'): void
-}>()
-
-const isFullscreen = ref(false)
 const workflowStore = useWorkflowStore()
+const isRunning = ref(false)
+const isFullscreen = ref(false)
 
-// Computed properties from store
-const isRunning = computed(() => workflowStore.state.isRunning)
-const isPaused = computed(() => workflowStore.state.isPaused)
 const canUndo = computed(() => workflowStore.canUndo)
 const canRedo = computed(() => workflowStore.canRedo)
+
+const emits = defineEmits<{
+  (e: 'run'): void
+  (e: 'clear'): void
+  (e: 'save'): void
+  (e: 'export'): void
+  (e: 'share'): void
+  (e: 'toggle-fullscreen'): void
+}>()
+
+const isRunningComputed = computed(() => workflowStore.state.isRunning)
+const isPaused = computed(() => workflowStore.state.isPaused)
 const hasUnsavedChanges = computed(() => workflowStore.hasUnsavedChanges)
 
 const handleFullscreen = () => {
   isFullscreen.value = !isFullscreen.value
-  emit('toggle-fullscreen')
+  emits('toggle-fullscreen')
 }
 
 const runWorkflow = async () => {
@@ -76,115 +77,91 @@ const clearWorkflow = () => {
     }
   })
 }
+
+const handleExport = () => {
+  // Set background to white before export
+  const workflow = document.querySelector('.workflow-container')
+  if (workflow) {
+    const originalBg = workflow.style.background
+    workflow.style.background = '#ffffff'
+    
+    // Export after background change
+    emits('export')
+    
+    // Restore original background
+    setTimeout(() => {
+      workflow.style.background = originalBg
+    }, 100)
+  }
+}
 </script>
 
 <template>
   <div class="workflow-toolbar">
     <div class="left-section">
-      <div class="logo">
-        <el-icon><Connection /></el-icon>
-        <span>Workflow Editor</span>
-      </div>
-      
       <div class="tabs">
         <div class="tab active">Editor</div>
-        <div class="tab">History</div>
         <div class="tab">Logs</div>
+        <div class="tab">Running</div>
       </div>
     </div>
 
     <div class="right-section">
       <div class="action-buttons">
-        <!-- Edit Actions -->
+        <!-- Undo/Redo -->
         <el-button-group>
           <el-tooltip content="Undo" placement="bottom">
             <el-button 
+              :icon="Back"
               :disabled="!canUndo"
               @click="workflowStore.undo"
-            >
-              <el-icon><Back /></el-icon>
-            </el-button>
+            />
           </el-tooltip>
-          
           <el-tooltip content="Redo" placement="bottom">
             <el-button 
+              :icon="Right"
               :disabled="!canRedo"
               @click="workflowStore.redo"
-            >
-              <el-icon><Right /></el-icon>
-            </el-button>
+            />
           </el-tooltip>
         </el-button-group>
 
-        <!-- Workflow Controls -->
+        <el-tooltip content="Run" placement="bottom">
+          <el-button 
+            type="primary"
+            :icon="VideoPlay"
+            :loading="isRunningComputed"
+            @click="emits('run')"
+          />
+        </el-tooltip>
+
+        <el-tooltip content="Export as Image" placement="bottom">
+          <el-button :icon="Picture" @click="handleExport" />
+        </el-tooltip>
+
+        <el-tooltip content="Share" placement="bottom">
+          <el-button :icon="Share" @click="emits('share')" />
+        </el-tooltip>
+        
         <el-button-group>
-          <el-tooltip 
-            :content="isRunning ? (isPaused ? 'Resume Workflow' : 'Pause Workflow') : 'Run Workflow'" 
-            placement="bottom"
-          >
-            <el-button 
-              type="primary" 
-              :loading="isRunning && !isPaused"
-              @click="isRunning ? (isPaused ? resumeWorkflow : pauseWorkflow) : runWorkflow"
-            >
-              <template #icon>
-                <el-icon>
-                  <component :is="isRunning ? (isPaused ? 'VideoPlay' : 'VideoPause') : 'VideoPlay'" />
-                </el-icon>
-              </template>
-              {{ isRunning ? (isPaused ? 'Resume' : 'Pause') : 'Run Workflow' }}
-            </el-button>
+          <el-tooltip content="Grid View" placement="bottom">
+            <el-button :icon="Grid" />
+          </el-tooltip>
+          <el-tooltip content="List View" placement="bottom">
+            <el-button :icon="List" />
+          </el-tooltip>
+          <el-tooltip content="Settings" placement="bottom">
+            <el-button :icon="Setting" />
           </el-tooltip>
         </el-button-group>
 
-        <!-- View Controls -->
-        <el-button-group>
-          <el-tooltip content="Zoom Out" placement="bottom">
-            <el-button @click="$emit('zoom-out')">
-              <el-icon><ZoomOut /></el-icon>
-            </el-button>
-          </el-tooltip>
-          
-          <el-tooltip content="Zoom In" placement="bottom">
-            <el-button @click="$emit('zoom-in')">
-              <el-icon><ZoomIn /></el-icon>
-            </el-button>
-          </el-tooltip>
-          
-          <el-tooltip :content="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'" placement="bottom">
-            <el-button @click="handleFullscreen">
-              <el-icon>
-                <component :is="isFullscreen ? 'Aim' : 'FullScreen'" />
-              </el-icon>
-            </el-button>
-          </el-tooltip>
-        </el-button-group>
+        <el-tooltip content="More" placement="bottom">
+          <el-button :icon="More" />
+        </el-tooltip>
 
-        <el-button-group>
-          <el-tooltip content="Export Workflow" placement="bottom">
-            <el-button type="primary" @click="$emit('export')">
-              <el-icon><Download /></el-icon>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="Run Workflow" placement="bottom">
-            <el-button type="success" @click="$emit('run')">
-              <el-icon><VideoPlay /></el-icon>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="Save Workflow" placement="bottom">
-            <el-button type="primary" @click="$emit('save')">
-              <el-icon><Upload /></el-icon>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="Clear Workflow" placement="bottom">
-            <el-button 
-              :disabled="isRunning"
-              @click="clearWorkflow"
-            >
-              <el-icon><Delete /></el-icon>
-            </el-button>
-          </el-tooltip>
-        </el-button-group>
+        <el-button type="primary" @click="emits('save')">
+          Save
+        </el-button>
       </div>
     </div>
   </div>
@@ -203,14 +180,6 @@ const clearWorkflow = () => {
 .left-section {
   display: flex;
   align-items: center;
-  gap: 24px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
 }
 
 .tabs {
@@ -223,6 +192,7 @@ const clearWorkflow = () => {
   border-radius: 4px;
   cursor: pointer;
   color: var(--el-text-color-regular);
+  font-size: 14px;
 }
 
 .tab:hover {
@@ -242,5 +212,11 @@ const clearWorkflow = () => {
 .action-buttons {
   display: flex;
   gap: 8px;
+  align-items: center;
+}
+
+:deep(.el-button) {
+  padding: 8px;
+  height: 32px;
 }
 </style>

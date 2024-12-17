@@ -16,6 +16,17 @@ const workflowBlocks = [
       { type: 'Clipboard', icon: 'Document', description: 'Copy to clipboard', color: '#F7E8FF' },
       { type: 'Insert Data', icon: 'DocumentAdd', description: 'Insert data', color: '#FFE8E8' }
     ]
+  },
+  {
+    category: 'Simulations',
+    items: [
+      { type: 'Physics Sim', icon: 'DataAnalysis', description: 'Physical system simulation', color: '#C8E6C9' },
+      { type: 'Chemical Sim', icon: 'Histogram', description: 'Chemical reaction simulation', color: '#B3E5FC' },
+      { type: 'Electrical Sim', icon: 'Lightning', description: 'Electrical circuit simulation', color: '#FFE0B2' },
+      { type: 'Fluid Sim', icon: 'WaterMeter', description: 'Fluid dynamics simulation', color: '#BBDEFB' },
+      { type: 'Heat Sim', icon: 'Sunny', description: 'Heat transfer simulation', color: '#FFCCBC' },
+      { type: 'Mechanical Sim', icon: 'Tools', description: 'Mechanical system simulation', color: '#D1C4E9' }
+    ]
   }
 ]
 

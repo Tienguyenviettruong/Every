@@ -66,9 +66,23 @@ export const useWorkflowStore = defineStore('workflow', () => {
 
   const updateNode = (nodeId: string, updates: Partial<WorkflowNode>) => {
     saveToHistory()
-    const node = state.value.nodes.find(n => n.id === nodeId)
-    if (node) {
-      Object.assign(node, updates)
+    const nodeIndex = state.value.nodes.findIndex(n => n.id === nodeId)
+    if (nodeIndex !== -1) {
+      // Create a new node object with all existing properties and updates
+      state.value.nodes[nodeIndex] = {
+        ...state.value.nodes[nodeIndex],
+        ...updates,
+        // Ensure data property is properly merged
+        data: {
+          ...state.value.nodes[nodeIndex].data,
+          ...(updates.data || {}),
+          // Preserve the config object if it exists in updates
+          config: {
+            ...(state.value.nodes[nodeIndex].data?.config || {}),
+            ...(updates.data?.config || {})
+          }
+        }
+      }
     }
   }
 

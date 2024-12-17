@@ -24,6 +24,7 @@ export interface NodeData {
   progress?: number;
   executionTime?: number;
   lastExecuted?: Date;
+  config?: Record<string, any>;
 }
 
 export interface WorkflowNode {
