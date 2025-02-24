@@ -1,0 +1,10 @@
+{
+  "map": {
+    "title": "Map Visualization",
+    "download": "Download as Image",
+    "uploadGeoJSON": "Upload GeoJSON"
+  },
+  "menu": {
+    "map": "Map Visualization"
+  }
+} 

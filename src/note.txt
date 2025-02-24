@@ -1,0 +1,59 @@
+voyaye : r title thành dropdownlist: 
+
+CABIN: 
+- registrtion, bỏ chữ số đi
+- operation, giai đoạn khai thác
+- turbulence: nhiễu động không khí
+- no of crew: số thành viên tổ bay
+- report to author: báo cáo cơ quan liên quan
+- contact details: thông tin liên hệ
+- type of person:  chức năng
+
+
+FDM:
+- file no: số tập tin.
+- duration: khoangr thời gian
+- event validity: Giá trị vụ viêcj
+- time to peak : 
+- alimeter: độ cao
+- sky condition: điều kiện bầu trời
+
+
+FLIGHT:
+- flight level: mực bay
+- flight safety event: sự vụ an toàn bay
+- ats UNIT : DỊCH VỤ ats
+- MAINTENECN org:  TỔ CHỨC BẢO dưỡng
+- checked by: xác thực bởi
+- landing gear: hệ thống càng đáp
+- flight engineer's name: nhân viên kỹ thuật
+- mục primary duties xem khi chọn other có thể taọ ô điền không
+- seat assignment: vị trí  ngồi
+- total cloud: tình trạng mây
+- cloud ceiling: trần mây
+- trafic: tình trạng không lưu
+- cleared Alt: độ cao cho phép
+- ATC Unit: Vùng atc
+- atc instruction issued: lệnh atc chỉ dẫn
+- bird no. seen: số lượng chim
+-
+
+GROUND QUALI + SAFETY:
+- reg (other operator): nhà khai thác khác
+- effect on flight: bỏ chữ tới
+
+HAZARD:
+- proposed solution:  đề xuất cải tiến
+
+CAAV
+- runway state: tình trạng đường bãi
+-lượng mưa 2 => mức độ
+- phê duyệt etops=> phê duyệt etops
+- component....: tổ chức sửa chữa - bộ phận bảo dưỡng
+- reporting org: đơn vị báo cáo 
+
+
+FATIGUE:
+- how long had....: bạn đã thực hiện công việc này bao lâu:
+
+

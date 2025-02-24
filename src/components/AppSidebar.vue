@@ -14,7 +14,8 @@ const props = withDefaults(defineProps<Props>(), {
     { icon: 'HomeFilled', title: 'menu.dashboard', path: '/' },
     { icon: 'Connection', title: 'menu.lifecycle', path: '/lifecycle' },
     { icon: 'DataAnalysis', title: 'menu.lab', path: '/lab' },
-    { icon: 'Share', title: 'menu.workflow', path: '/workflow' }
+    { icon: 'Share', title: 'menu.workflow', path: '/workflow' },
+    { icon: 'MapLocation', title: 'menu.map', path: '/map' }
   ]
 })
 

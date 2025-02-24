@@ -1,0 +1,10 @@
+{
+  "map": {
+    "title": "Hiển thị Bản đồ",
+    "download": "Tải xuống dạng ảnh",
+    "uploadGeoJSON": "Tải lên GeoJSON"
+  },
+  "menu": {
+    "map": "Hiển thị Bản đồ"
+  }
+} 

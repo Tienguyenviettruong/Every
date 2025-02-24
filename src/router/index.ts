@@ -6,6 +6,8 @@ import Optimize from '../views/Optimize.vue'
 import Lab from '../views/Lab.vue'
 import Chat from '../views/Chat.vue'
 import Workflow from '../views/Workflow.vue'
+import MapView from '../views/MapView.vue'
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -58,6 +60,12 @@ const router = createRouter({
       path: '/workflow',
       name: 'Workflow',
       component: Workflow,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/map',
+      name: 'Map',
+      component: MapView,
       meta: { requiresAuth: true }
     }
   ]
